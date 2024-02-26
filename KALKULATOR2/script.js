@@ -4,18 +4,22 @@ const buttons = document.querySelectorAll("button");
 buttons.forEach((item) => {
   item.onclick = () => {
     if (item.id == "clear") {
-      display.innerText = "";
+      clearDisplay();
     } else if (item.id == "backspace") {
-      let string = display.innerText.toString();
-      display.innerText = string.substr(0, string.length - 1);
+      backspace();
     } else if (display.innerText != "" && item.id == "equal") {
-      display.innerText = eval(display.innerText);
+      calculate();
     } else if (display.innerText == "" && item.id == "equal") {
       display.innerText = "Empty!";
       setTimeout(() => (display.innerText = ""), 2000);
-    } 
-    else {
-      display.innerText += item.id;
+    } else {
+      if (item.id == "*") {
+        updateDisplay("×");
+      } else if (item.id == "/") {
+        updateDisplay("÷");
+      } else {
+        updateDisplay(item.id);
+      }
     }
   };
 });
@@ -29,3 +33,31 @@ themeToggleBtn.onclick = () => {
   themeToggleBtn.classList.toggle("active");
   isDark = !isDark;
 };
+
+function updateDisplay(value) {
+  display.innerText += value;
+}
+
+function calculate() {
+  try {
+    let expression = display.innerText.replace(/×/g, '*').replace(/÷/g, '/'); // Ganti simbol '×' dengan '*' dan '÷' dengan '/'
+    const result = eval(expression);
+
+    if (Number.isFinite(result)) {
+      display.innerText = result;
+    } else {
+      display.innerText = 'Error';
+    }
+  } catch (error) {
+    display.innerText = 'Error';
+  }
+}
+
+function clearDisplay() {
+  display.innerText = '';
+}
+
+function backspace() {
+  let string = display.innerText.toString();
+  display.innerText = string.substr(0, string.length - 1);
+}
